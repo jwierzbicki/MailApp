@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">MailApp</string>
+    <string name="subject_text">Subject: </string>
+    <string name="from_text">From: </string>
+    <string name="msg_text">Message: \n</string>
+</resources>
