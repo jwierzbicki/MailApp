@@ -50,8 +50,10 @@
 
     <TextView
         android:id="@+id/msg_text"
+        android:layout_height="24dp"
         android:layout_below="@id/fromdate_layout"
         android:text="@string/msg_text"
+        android:layout_marginBottom="0dp"
         style="@style/Heading"/>
     <TextView
         android:id="@+id/body_body"
