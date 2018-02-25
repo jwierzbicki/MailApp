@@ -1,67 +1,77 @@
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".MailBodyActivity">
 
-    <TextView
-        android:id="@+id/subject_text"
-        android:layout_alignParentTop="true"
-        android:text="@string/subject_text"
-        style="@style/Heading"/>
-    <TextView
-        android:id="@+id/body_subject"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/subject_text"
-        android:layout_marginBottom="8dp"
-        tools:text="SUBJECT"/>
+    <include
+        android:id="@+id/tool_bar_body"
+        layout="@layout/tool_bar"/>
 
-    <TextView
-        android:id="@+id/from_text"
-        android:layout_below="@id/body_subject"
-        android:text="@string/from_text"
-        style="@style/Heading"/>
-    <LinearLayout
-        android:id="@+id/fromdate_layout"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_below="@id/from_text">
-        <TextView
-            android:id="@+id/body_from"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            tools:text="FROM"/>
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/body_time"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:id="@+id/subject_text"
+            android:layout_alignParentTop="true"
+            android:text="@string/subject_text"
+            style="@style/Heading"/>
+        <TextView
+            android:id="@+id/body_subject"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            tools:text="TIME"/>
-    </LinearLayout>
+            android:layout_below="@id/subject_text"
+            android:layout_marginBottom="8dp"
+            tools:text="SUBJECT"/>
 
-    <TextView
-        android:id="@+id/msg_text"
-        android:layout_height="24dp"
-        android:layout_below="@id/fromdate_layout"
-        android:text="@string/msg_text"
-        android:layout_marginBottom="0dp"
-        style="@style/Heading"/>
-    <TextView
-        android:id="@+id/body_body"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/msg_text"
-        android:layout_alignParentBottom="true"
-        android:scrollbars="vertical"
-        tools:text="M E S S A G E"/>
+        <TextView
+            android:id="@+id/from_text"
+            android:layout_below="@id/body_subject"
+            android:text="@string/from_text"
+            style="@style/Heading"/>
+        <LinearLayout
+            android:id="@+id/fromdate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_below="@id/from_text">
+            <TextView
+                android:id="@+id/body_from"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                tools:text="FROM"/>
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/body_time"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                tools:text="TIME"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/msg_text"
+            android:layout_height="24dp"
+            android:layout_below="@id/fromdate_layout"
+            android:text="@string/msg_text"
+            android:layout_marginBottom="0dp"
+            style="@style/Heading"/>
+        <TextView
+            android:id="@+id/body_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/msg_text"
+            android:layout_alignParentBottom="true"
+            android:scrollbars="vertical"
+            tools:text="M E S S A G E"/>
+    </RelativeLayout>
+
+
+</LinearLayout>

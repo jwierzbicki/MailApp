@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.mailapp.SendEmailActivity"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/tool_bar_send"
+        layout="@layout/tool_bar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/send_to_textView"
+            android:layout_alignParentTop="true"
+            android:text="@string/to_text"
+            style="@style/Heading"/>
+
+        <EditText
+            android:id="@+id/send_to_editText"
+            android:hint="@string/to_hint"
+            android:inputType="textEmailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/send_to_textView"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/send_subject_textView"
+            android:layout_below="@id/send_to_editText"
+            android:text="@string/subject_text"
+            style="@style/Heading"/>
+
+        <EditText
+            android:id="@+id/send_subject_editText"
+            android:hint="@string/subject_hint"
+            android:inputType="textEmailSubject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/send_subject_textView"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/send_body_textView"
+            android:layout_below="@id/send_subject_editText"
+            android:text="@string/msg_text"
+            style="@style/Heading"/>
+
+        <EditText
+            android:id="@+id/send_body_editText"
+            android:hint="@string/body_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:maxLines="10"
+            android:lines="10"
+            android:maxLength="1500"
+            android:scrollHorizontally="false"
+            android:layout_below="@id/send_body_textView"/>
+
+        <Button
+            android:id="@+id/send_button"
+            android:text="@string/send_button_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
+
+
+</LinearLayout>

@@ -1,6 +1,22 @@
 <resources>
     <string name="app_name">MailApp</string>
-    <string name="subject_text">Subject: </string>
-    <string name="from_text">From: </string>
-    <string name="msg_text">Message: \n</string>
+    <string name="subject_text">Subject:</string>
+    <string name="to_text">To:</string>
+    <string name="from_text">From:</string>
+    <string name="msg_text">Message:</string>
+    <string name="email_text_view">Enter email address</string>
+    <string name="email_hint">Email</string>
+    <string name="password_text_view">Enter password</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button_text">Login</string>
+    <string name="send_button_text">Send</string>
+    <string name="to_hint">Recipient\'s email address</string>
+    <string name="subject_hint">Message subject</string>
+    <string name="body_hint">Message content</string>
+    <string name="send_action_item">Send</string>
+
+    <string-array name="host_name">
+        <item>WP.PL</item>
+        <item>GMAIL.COM</item>
+    </string-array>
 </resources>

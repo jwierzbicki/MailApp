@@ -19,12 +19,12 @@ class Mail {
         mDate = date;
     }
 
-    String getFrom() { return mFrom; }
+    String getFromAddress() { return mFrom; }
     String getSubject() { return mSubject; }
     String getBody() { return mBody; }
-    Date getDate() { return mDate; }
-    String getTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:m", Locale.ENGLISH);
+    //Date getDate() { return mDate; }
+    String getMailTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.ENGLISH);
         return dateFormat.format(mDate);
     }
 }
