@@ -4,46 +4,50 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Authenticator;
-import javax.mail.BodyPart;
+import javax.mail.FetchProfile;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Store;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMultipart;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int LOGIN_REQUEST_CODE = 1;
+
+    long startTime = 0, endTime = 0;
+
+    Session session;
+    Store store;
+    Folder emailFolder;
+
+    public static List<Mail> emailList;
 
     MessageAdapter mAdapter;
     private String mUser;
     private String mPassword;
     private String mHost;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//        mUser = "testmailforapp@wp.pl";
-//        mPassword = "testmail123";
-//        mHost = "pop3.wp.pl";
 
         Toolbar tool_bar = findViewById(R.id.tool_bar_main);
         setSupportActionBar(tool_bar);
@@ -61,10 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 Mail currentMail = mAdapter.getItem(i);
                 Intent intent = new Intent(MainActivity.this, MailBodyActivity.class);
 
-                intent.putExtra("From", currentMail.getFromAddress());
-                intent.putExtra("Subject", currentMail.getSubject());
-                intent.putExtra("Time", currentMail.getMailTime());
-                intent.putExtra("Message", currentMail.getBody());
+                intent.putExtra("ID", currentMail.getId());
 
                 startActivity(intent);
             }
@@ -72,7 +73,25 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, LogScreenActivity.class);
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    emailFolder.close(false);
+                    store.close();
+                } catch (MessagingException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        new Thread(runnable).start();
     }
 
     @Override
@@ -112,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected List<Mail> doInBackground(String... accountStrings) {
 
+            startTime = System.currentTimeMillis();
+
             List<Mail> mailList = new ArrayList<>();
 
             // Account name/pass/host
@@ -124,40 +145,35 @@ public class MainActivity extends AppCompatActivity {
                 properties.put("mail.store.protocol", "imaps");
                 properties.put("mail.imap.host", host);
                 properties.put("mail.imap.port", "993");
-//                properties.put("mail.imap.starttls.enable", "true");
-//                properties.put("mail.pop3.user", user);
-//                properties.put("mail.pop3.socketFactory", 995);
-//                properties.put("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                properties.put("mail.debug", "true");
 
-                Session session = Session.getDefaultInstance(properties, new Authenticator() {
+                session = Session.getDefaultInstance(properties, new Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
                         return new PasswordAuthentication(user, password);
                     }
                 });
-                Store store = session.getStore("imaps");
+                store = session.getStore("imaps");
 
                 store.connect(host, user, password);
 
-                Folder emailFolder = store.getFolder("INBOX");
+                emailFolder = store.getFolder("INBOX");
                 emailFolder.open(Folder.READ_ONLY);
 
                 Message[] messages = emailFolder.getMessages();
 
+                FetchProfile profile = new FetchProfile();
+                profile.add(FetchProfile.Item.ENVELOPE);
+                profile.add(FetchProfile.Item.CONTENT_INFO);
+                profile.add("X-Mailer");
+
+                emailFolder.fetch(messages, profile);
+
                 for (Message message : messages) {
-
-                    InternetAddress fromAddress = (InternetAddress) message.getFrom()[0];
-                    String fromAddressText = fromAddress.getPersonal() + " - " + fromAddress.getAddress();
-
-                    String msgBody = getTextFromMessage(message);
-
-                    mailList.add(new Mail(fromAddressText, message.getSubject(), msgBody, message.getReceivedDate()));
+                    mailList.add(new Mail(message));
                 }
 
-                emailFolder.close(false);
-                store.close();
-
-            } catch (MessagingException | IOException e) {
+            } catch (MessagingException e) {
                 e.printStackTrace();
             }
 
@@ -165,44 +181,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<Mail> mail) {
+        protected void onPostExecute(List<Mail> mailList) {
+
+            endTime = System.currentTimeMillis();
 
             View loadingIndicator = findViewById(R.id.loading_indicator);
             loadingIndicator.setVisibility(View.GONE);
 
+            emailList = mailList;
+
             mAdapter.clear();
 
-            if (mail != null && !mail.isEmpty())
-                mAdapter.addAll(mail);
-        }
-
-        private String getTextFromMessage(Message message) throws MessagingException, IOException {
-            String result = "";
-            if (message.isMimeType("text/plain")) {
-                result = message.getContent().toString();
-            } else if (message.isMimeType("multipart/*")) {
-                MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
-                result = getTextFromMimeMultipart(mimeMultipart);
+            if (mailList != null && !mailList.isEmpty()) {
+                mAdapter.addAll(mailList);
+                Toast.makeText(MainActivity.this, "Execution time: " + ((endTime - startTime)/1000) + " seconds", Toast.LENGTH_SHORT).show();
+                Log.v("MainActivity", "Execution time: " + ((endTime - startTime)/1000) + " seconds");
             }
-            return result;
-        }
-
-        private String getTextFromMimeMultipart(MimeMultipart mimeMultipart)  throws MessagingException, IOException{
-            StringBuilder result = new StringBuilder();
-            int count = mimeMultipart.getCount();
-            for (int i = 0; i < count; i++) {
-                BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-                if (bodyPart.isMimeType("text/plain")) {
-                    result.append("\n").append(bodyPart.getContent());
-                    break;
-                } else if (bodyPart.isMimeType("text/html")) {
-                    String html = (String) bodyPart.getContent();
-                    result.append("\n").append(org.jsoup.Jsoup.parse(html).text());
-                } else if (bodyPart.getContent() instanceof MimeMultipart){
-                    result.append(getTextFromMimeMultipart((MimeMultipart) bodyPart.getContent()));
-                }
-            }
-            return result.toString();
         }
     }
 }

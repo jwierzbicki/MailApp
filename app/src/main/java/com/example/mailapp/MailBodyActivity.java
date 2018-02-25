@@ -1,18 +1,30 @@
 package com.example.mailapp;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.view.View;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMultipart;
+
 public class MailBodyActivity extends AppCompatActivity {
+
+    Mail mail;
+    String mBody;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,34 +34,43 @@ public class MailBodyActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.tool_bar_body);
         setSupportActionBar(toolbar);
 
-        // Create new Mail object based on passed arguments from MainActivity
         Bundle extras = getIntent().getExtras();
-        String from = extras.getString("From");
-        String subject = extras.getString("Subject");
-        String message = extras.getString("Message");
-        String time = extras.getString("Time");
+        int id = extras.getInt("ID");
 
-        DateFormat format = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.ENGLISH);
-        Date date = new Date();
-        try {
-            date = format.parse(time);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        List<Mail> mailList = MainActivity.emailList;
+        mail = mailList.get(id-1);
+
+        GetMailBodyTask getMailBodyTask = new GetMailBodyTask();
+        getMailBodyTask.execute();
+    }
+
+    private class GetMailBodyTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            return mail.getBody();
         }
 
-        Mail mail = new Mail(from, subject, message, date);
+        @Override
+        protected void onPostExecute(String body) {
 
-        TextView fromTextView = findViewById(R.id.body_from);
-        fromTextView.setText(mail.getFromAddress());
+            View loadingIndicator = findViewById(R.id.loading_indicator_mailBody);
+            loadingIndicator.setVisibility(View.GONE);
 
-        TextView subjectTextView = findViewById(R.id.body_subject);
-        subjectTextView.setText(mail.getSubject());
+            mBody = body;
 
-        TextView timeTextView = findViewById(R.id.body_time);
-        timeTextView.setText(mail.getMailTime());
+            TextView fromTextView = findViewById(R.id.body_from);
+            fromTextView.setText(mail.getFromAddress());
 
-        TextView messageTextView = findViewById(R.id.body_body);
-        messageTextView.setText(mail.getBody());
-        messageTextView.setMovementMethod(new ScrollingMovementMethod());
+            TextView subjectTextView = findViewById(R.id.body_subject);
+            subjectTextView.setText(mail.getSubject());
+
+            TextView timeTextView = findViewById(R.id.body_time);
+            timeTextView.setText(mail.getMailTime());
+
+            TextView messageTextView = findViewById(R.id.body_body);
+            messageTextView.setText(mBody);
+            messageTextView.setMovementMethod(new ScrollingMovementMethod());
+        }
     }
 }

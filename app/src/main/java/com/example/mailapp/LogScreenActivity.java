@@ -61,11 +61,6 @@ public class LogScreenActivity extends AppCompatActivity {
                 email = emailView.getText().toString();
                 password = passwordView.getText().toString();
 
-
-//                Log.v("LogScreenActivity", "SelectedItem value: " + selectedItem);
-
-
-
                 Intent returnIntent = getIntent();
 
                 if (email.length() < 7 || password.length() < 5) {
@@ -79,7 +74,6 @@ public class LogScreenActivity extends AppCompatActivity {
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                 }
-
             }
         });
     }

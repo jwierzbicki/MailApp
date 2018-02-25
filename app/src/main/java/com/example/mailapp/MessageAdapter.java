@@ -38,12 +38,9 @@ public class MessageAdapter extends ArrayAdapter<Mail> {
             TextView fromTextView = listItemView.findViewById(R.id.mail_from_view);
             fromTextView.setText(currentMail.getFromAddress());
 
-            Log.v("MessageAdapter", "pre getMailTime method");
-
             TextView dateTextView =  listItemView.findViewById(R.id.mail_date_view);
             dateTextView.setText(currentMail.getMailTime());
 
-            Log.v("MessageAdapter", "post getMailTime method");
         }
 
         return listItemView;
