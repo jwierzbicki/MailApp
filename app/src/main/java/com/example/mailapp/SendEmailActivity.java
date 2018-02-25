@@ -120,5 +120,16 @@ public class SendEmailActivity extends AppCompatActivity {
             }
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Toast.makeText(SendEmailActivity.this, "Email sent", Toast.LENGTH_LONG).show();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finish();
+        }
     }
 }

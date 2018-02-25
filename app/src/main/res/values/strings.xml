@@ -14,6 +14,7 @@
     <string name="subject_hint">Message subject</string>
     <string name="body_hint">Message content</string>
     <string name="send_action_item">Send</string>
+    <string name="text_wp_pl">\@wp.pl</string>
 
     <string-array name="host_name">
         <item>WP.PL</item>
